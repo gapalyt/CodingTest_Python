@@ -1,30 +1,27 @@
 import sys
 
-def dfs(day, profit): # 현재 날짜와 누적된 이익
-    global max_profit # 더 큰 값을 저장하기 위해 전역 변수 사용
+def solution(N, schedules): # N은 최사까지 남은 날짜, schedules는 일정 리스트
+    dp = [0] * (N + 1) # 초기값 0, 날짜별 최대 이익 저장하는 리스트
 
-    if day == N + 1: # 현재 날짜가 퇴사일 다음날인 경우
-        max_profit = max(max_profit, profit) # 둘 중 더 큰 값을 저장
+    for i in range(N - 1, -1, -1): # 역순으로 일정 확인
+        day, profit = schedules[i] # 걸리는 기간과 이익
+        next_day = i + day
 
-        return # 종료
+        if next_day > N: # 다음 날이 퇴사일을 넘기는 경우
+            dp[i] = dp[i + 1] # 현재 날짜의 최대 이익과 다음 날짜의 최대 이익 동일
+        else:
+            dp[i] = max(dp[i + 1], profit + dp[next_day]) # 둘 중 더 큰 값 선택
 
-    if day > N + 1: # 현재 날짜가 퇴사일을 넘어간 경우
-        return # 종료
+    return dp[0] # 첫 번째 날짜의 최대 이익 반환
 
-    # 상담을 하는 경우
-    dfs(day + T[day], profit + P[day]) # 누적된 이익에 현재 상담으로 얻는 이익을 더함
+if __name__ == "__main__": # 스크립트가 직접 실행될 때만 실행
+    N = int(input())  # 퇴사까지 남은 날짜
+    schedules = [] # 일정 리스트
 
-    # 상담을 건너뛰는 경우
-    dfs(day + 1, profit)
+    for _ in range(N): # 퇴사까지 남은 날짜 만큼 반복
+        day, profit = map(int, sys.stdin.readline().split()) # 일정 소요와 이익 입력
+        schedules.append((day, profit)) # 튜플로 만들어 리스트에 저장
 
-N = int(sys.stdin.readline()) # 전체 일정
-T = [0] * (N + 1) # 일정 날짜
-P = [0] * (N + 1) # 일정 날짜
-
-for i in range(1, N + 1):
-    T[i], P[i] = map(int, sys.stdin.readline().split()) # 날짜 별 상담시간과 상담으로 얻는 이익
-
-max_profit = 0 # 초기화
-dfs(1, 0) # 첫 날짜인 1일부터 시작하는데 누적된 이익은 0
-
-print(max_profit) # 최대 이익 출력
+    answer = solution(N, schedules) # 최대 이익 저장
+    
+    print(answer) # 최대 이익 출력
