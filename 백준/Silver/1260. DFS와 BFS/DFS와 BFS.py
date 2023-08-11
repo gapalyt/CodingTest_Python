@@ -1,12 +1,13 @@
+import sys
 from collections import deque
 
-n, m, v = map(int, input().split()) # 정점, 간선, 시작점
+n, m, v = map(int, sys.stdin.readline().split()) # 정점, 간선, 시작점
 
 #인접 리스트
 graph = [[]for _ in range(n + 1)] # 0번 정점은 사용하지 않으니 1번부터 n번까지의 정점 사용
 
 for i in range(m):
-    v1, v2 = map(int, input().split())
+    v1, v2 = map(int, sys.stdin.readline().split())
     graph[v1].append(v2)
     graph[v2].append(v1)
 
